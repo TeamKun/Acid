@@ -1,7 +1,7 @@
-damageTerm: 20
+damageTick: 10
 damage: 1
 splashDamage: 5
-acidTarget:
+acidSwitch:
   - block
   - potion
   - rain

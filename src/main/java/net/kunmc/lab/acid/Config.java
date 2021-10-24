@@ -23,11 +23,17 @@ public class Config {
 
         intConf.put(Const.DAMAGE, config.getInt(Const.DAMAGE));
         intConf.put(Const.SPLASH_DAMAGE, config.getInt(Const.SPLASH_DAMAGE));
-        intConf.put(Const.DAMAGE_TERM, config.getInt(Const.DAMAGE_TERM));
+        intConf.put(Const.DAMAGE_TICK, config.getInt(Const.DAMAGE_TICK));
 
-        booleanConf.put(Const.ACID_TARGET_BLOCK, true);
-        booleanConf.put(Const.ACID_TARGET_POTION, true);
-        booleanConf.put(Const.ACID_TARGET_RAIN, true);
+        booleanConf.put(Const.ACID_TARGET_BLOCK, false);
+        booleanConf.put(Const.ACID_TARGET_POTION, false);
+        booleanConf.put(Const.ACID_TARGET_POTION_EFFECT, false);
+        booleanConf.put(Const.ACID_TARGET_RAIN, false);
+        booleanConf.put(Const.ACID_TARGET_MOB, false);
+
+        for (String key: config.getStringList("acidSwitch")) {
+            booleanConf.put(key, true);
+        }
     }
 
 }

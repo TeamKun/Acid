@@ -31,21 +31,29 @@ public class CommandController implements CommandExecutor, TabCompleter {
         } else if (args.length == 3 && args[0].equals(Const.SET_CONFIG) &&
                 ((args[1].equals(Const.DAMAGE) ||
                         args[1].equals(Const.SPLASH_DAMAGE) ||
-                        args[1].equals(Const.DAMAGE_TERM)))) {
+                        args[1].equals(Const.DAMAGE_TICK)))) {
             completions.add("<数字>");
-        } else if (args.length == 3 && args[1].equals(Const.OFF_ACID_TARGET)) {
+        } else if (args.length == 2 && args[0].equals(Const.SET_CONFIG)) {
+            completions.addAll(Stream.of(
+                    Const.DAMAGE_TICK,
+                    Const.DAMAGE,
+                    Const.SPLASH_DAMAGE,
+                    Const.OFF_ACID_TARGET,
+                    Const.ON_ACID_TARGET)
+                    .filter(e -> e.startsWith(args[1])).collect(Collectors.toList()));
+        } else if (args.length == 3 && args[1].equals(Const.ON_ACID_TARGET)) {
             List<String> tmpCompletion = new ArrayList<>();
-            for (Map.Entry<String, Boolean> happening : Config.booleanConf.entrySet()) {
-                if (!happening.getValue()) {
-                    tmpCompletion.add(happening.getKey());
+            for (Map.Entry<String, Boolean> switchTarget : Config.booleanConf.entrySet()) {
+                if (!switchTarget.getValue()) {
+                    tmpCompletion.add(switchTarget.getKey());
                 }
             }
             completions.addAll(tmpCompletion.stream().filter(e -> e.startsWith(args[2])).collect(Collectors.toList()));
-        } else if (args.length == 3 && args[1].equals(Const.ON_ACID_TARGET)) {
+        } else if (args.length == 3 && args[1].equals(Const.OFF_ACID_TARGET)) {
             List<String> tmpCompletion = new ArrayList<>();
-            for (Map.Entry<String, Boolean> acidTarget : Config.booleanConf.entrySet()) {
-                if (acidTarget.getValue()) {
-                    tmpCompletion.add(acidTarget.getKey());
+            for (Map.Entry<String, Boolean> switchTarget : Config.booleanConf.entrySet()) {
+                if (switchTarget.getValue()) {
+                    tmpCompletion.add(switchTarget.getKey());
                 }
             }
             completions.addAll(tmpCompletion.stream().filter(e -> e.startsWith(args[2])).collect(Collectors.toList()));
@@ -109,27 +117,29 @@ public class CommandController implements CommandExecutor, TabCompleter {
                         Config.intConf.put(Const.SPLASH_DAMAGE, ret);
                         sender.sendMessage(DecolationConst.GREEN + Const.SPLASH_DAMAGE + "の値を" + Config.intConf.get(Const.SPLASH_DAMAGE) + "に変更しました");
                         break;
-                    case Const.DAMAGE_TERM:
+                    case Const.DAMAGE_TICK:
                         if (!checkArgsNum(sender, args.length, 3)) return true;
                         ret = validateNum(sender, args[2]);
                         if (ret == -1) return true;
 
-                        Config.intConf.put(Const.DAMAGE_TERM, ret);
-                        sender.sendMessage(DecolationConst.GREEN + Const.DAMAGE_TERM + "の値を" + Config.intConf.get(Const.DAMAGE_TERM) + "に変更しました");
+                        Config.intConf.put(Const.DAMAGE_TICK, ret);
+                        sender.sendMessage(DecolationConst.GREEN + Const.DAMAGE_TICK + "の値を" + Config.intConf.get(Const.DAMAGE_TICK) + "に変更しました");
                         break;
                     case Const.ON_ACID_TARGET:
                         if (!checkArgsNum(sender, args.length, 3)) return true;
                         if (!Config.booleanConf.containsKey(args[2]))
-                            sender.sendMessage(DecolationConst.RED + "存在しないHappeningです");
+                            sender.sendMessage(DecolationConst.RED + "存在しない設定です");
                         if (Config.booleanConf.get(args[2])) sender.sendMessage(DecolationConst.AQUA + "すでにONになっています");
                         Config.booleanConf.put(args[2], true);
+                        sender.sendMessage(DecolationConst.GREEN + args[2] + "の設定をONにしました");
                         break;
                     case Const.OFF_ACID_TARGET:
                         if (!checkArgsNum(sender, args.length, 3)) return true;
                         if (!Config.booleanConf.containsKey(args[2]))
-                            sender.sendMessage(DecolationConst.RED + "存在しないHappeningです");
+                            sender.sendMessage(DecolationConst.RED + "存在しない設定です");
                         if (!Config.booleanConf.get(args[2])) sender.sendMessage(DecolationConst.AQUA + "すでにOFFになっています");
                         Config.booleanConf.put(args[2], false);
+                        sender.sendMessage(DecolationConst.GREEN + args[2] + "の設定をOFFにしました");
                         break;
                 }
                 break;
@@ -139,14 +149,16 @@ public class CommandController implements CommandExecutor, TabCompleter {
                     return true;
                 }
                 sender.sendMessage(DecolationConst.GREEN + "設定値一覧");
-                List<String> acidTargets = new ArrayList<>();
+                List<String> acidSwitch = new ArrayList<>();
                 for (Map.Entry<String, Boolean> acidTarget : Config.booleanConf.entrySet()) {
-                    if (acidTarget.getValue()) acidTargets.add(acidTarget.getKey());
+                    System.out.println(acidTarget);
+                    if (acidTarget.getValue()) acidSwitch.add(acidTarget.getKey());
                 }
                 String prefix = "  ";
                 for (Map.Entry<String, Integer> param: Config.intConf.entrySet()) {
                     sender.sendMessage(String.format("%s%s: %s", prefix, param.getKey(), param.getValue()));
                 }
+                sender.sendMessage(String.format("%sacidSwitch: ", prefix) + acidSwitch);
                 break;
             default:
                 sender.sendMessage(DecolationConst.RED + "存在しないコマンドです");
@@ -172,14 +184,14 @@ public class CommandController implements CommandExecutor, TabCompleter {
                 , usagePrefix, Const.SET_CONFIG, Const.SPLASH_DAMAGE));
         sender.sendMessage(String.format("%ポーションなどを浴びた時に受けるダメージ", descPrefix));
         sender.sendMessage(String.format("%s%s %s <number>"
-                , usagePrefix, Const.SET_CONFIG, Const.DAMAGE_TERM));
+                , usagePrefix, Const.SET_CONFIG, Const.DAMAGE_TICK));
         sender.sendMessage(String.format("%s水や雨で濡れている時にダメージを受ける間隔(Tick)", descPrefix));
-        sender.sendMessage(String.format("%s%s %s <block|potion|rain>"
+        sender.sendMessage(String.format("%s%s %s <block|potion|potionEffect|rain|mob>"
                 , usagePrefix, Const.SET_CONFIG, Const.OFF_ACID_TARGET));
-        sender.sendMessage(String.format("%sダメージを受ける対象をOFF", descPrefix));
-        sender.sendMessage(String.format("%s%s %s <block|potion|rain>"
+        sender.sendMessage(String.format("%s指定した設定をOFFに切り替える", descPrefix));
+        sender.sendMessage(String.format("%s%s %s <block|potion|potionEffect|rain|mob>"
                 , usagePrefix, Const.SET_CONFIG, Const.ON_ACID_TARGET));
-        sender.sendMessage(String.format("%sダメージを受ける対象をON", descPrefix));
+        sender.sendMessage(String.format("%s指定した設定をONに切り替える", descPrefix));
         sender.sendMessage(String.format("%s%s"
                 , usagePrefix, Const.SHOW_STATUS));
         sender.sendMessage(String.format("%s設定などゲームの状態を確認", descPrefix));

@@ -3,6 +3,8 @@ package net.kunmc.lab.acid.game;
 import net.kunmc.lab.acid.Config;
 import net.kunmc.lab.acid.util.Const;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 
 import java.util.*;
@@ -64,5 +66,18 @@ public class GameManager {
         }
 
         return isInAcid;
+    }
+
+    public static boolean isPotionTargetEntity(Entity entity) {
+        boolean isTargetEntity = false;
+        if (entity instanceof Player) {
+            isTargetEntity = true;
+        }
+
+        if (entity instanceof Mob && Config.booleanConf.get(Const.ACID_TARGET_MOB)) {
+            isTargetEntity = true;
+        }
+
+        return isTargetEntity;
     }
 }
