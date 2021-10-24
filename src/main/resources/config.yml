@@ -1,0 +1,7 @@
+damageTerm: 20
+damage: 1
+splashDamage: 5
+acidTarget:
+  - block
+  - potion
+  - rain
