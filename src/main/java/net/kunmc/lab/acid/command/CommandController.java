@@ -137,7 +137,8 @@ public class CommandController implements CommandExecutor, TabCompleter {
                         if (!checkArgsNum(sender, args.length, 3)) return true;
                         if (!Config.booleanConf.containsKey(args[2]))
                             sender.sendMessage(DecolationConst.RED + "存在しない設定です");
-                        if (!Config.booleanConf.get(args[2])) sender.sendMessage(DecolationConst.AQUA + "すでにOFFになっています");
+                        if (!Config.booleanConf.get(args[2]))
+                            sender.sendMessage(DecolationConst.AQUA + "すでにOFFになっています");
                         Config.booleanConf.put(args[2], false);
                         sender.sendMessage(DecolationConst.GREEN + args[2] + "の設定をOFFにしました");
                         break;
@@ -155,7 +156,7 @@ public class CommandController implements CommandExecutor, TabCompleter {
                     if (acidTarget.getValue()) acidSwitch.add(acidTarget.getKey());
                 }
                 String prefix = "  ";
-                for (Map.Entry<String, Integer> param: Config.intConf.entrySet()) {
+                for (Map.Entry<String, Integer> param : Config.intConf.entrySet()) {
                     sender.sendMessage(String.format("%s%s: %s", prefix, param.getKey(), param.getValue()));
                 }
                 sender.sendMessage(String.format("%sacidSwitch: ", prefix) + acidSwitch);

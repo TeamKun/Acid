@@ -16,31 +16,31 @@ import org.bukkit.event.player.PlayerItemConsumeEvent;
 public class PotionEventHandler implements Listener {
     @EventHandler
     public void onPotionSplash(ProjectileHitEvent event) {
-        if (!GameManager.canEventProcess() || !Config.booleanConf.get(Const.ACID_TARGET_POTION)){
+        if (!GameManager.canEventProcess() || !Config.booleanConf.get(Const.ACID_TARGET_POTION)) {
             return;
         }
 
         Entity targetEntity = event.getHitEntity();
-        if (GameManager.isPotionTargetEntity(targetEntity) && event.getEntity() instanceof ThrownPotion){
-            ((LivingEntity)targetEntity).damage(Config.intConf.get(Const.SPLASH_DAMAGE));
+        if (GameManager.isPotionTargetEntity(targetEntity) && event.getEntity() instanceof ThrownPotion) {
+            ((LivingEntity) targetEntity).damage(Config.intConf.get(Const.SPLASH_DAMAGE));
         }
     }
 
     @EventHandler
     public void onPotionSplash(EntityPotionEffectEvent event) {
-        if (!GameManager.canEventProcess() || !Config.booleanConf.get(Const.ACID_TARGET_POTION_EFFECT)){
+        if (!GameManager.canEventProcess() || !Config.booleanConf.get(Const.ACID_TARGET_POTION_EFFECT)) {
             return;
         }
 
         Entity targetEntity = event.getEntity();
         if (GameManager.isPotionTargetEntity(targetEntity)) {
-            ((LivingEntity)targetEntity).damage(Config.intConf.get(Const.SPLASH_DAMAGE));
+            ((LivingEntity) targetEntity).damage(Config.intConf.get(Const.SPLASH_DAMAGE));
         }
     }
 
     @EventHandler
     public void onPlayerItemConsume(PlayerItemConsumeEvent event) {
-        if (!GameManager.canEventProcess() || !Config.booleanConf.get(Const.ACID_TARGET_POTION)){
+        if (!GameManager.canEventProcess() || !Config.booleanConf.get(Const.ACID_TARGET_POTION)) {
             return;
         }
 

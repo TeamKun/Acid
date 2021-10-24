@@ -44,7 +44,7 @@ public class GameManager {
                 .collect(Collectors.toList());
     }
 
-    public static int getWettingCnt(Player p){
+    public static int getWettingCnt(Player p) {
         UUID id = p.getUniqueId();
         if (playerWettingCnt.get(id) == null) {
             setWettingCnt(p, 0);
@@ -52,7 +52,7 @@ public class GameManager {
         return playerWettingCnt.get(id);
     }
 
-    public static void setWettingCnt(Player p, int cnt){
+    public static void setWettingCnt(Player p, int cnt) {
         playerWettingCnt.put(p.getUniqueId(), cnt);
     }
 

@@ -1,8 +1,8 @@
 package net.kunmc.lab.acid.task;
 
 import net.kunmc.lab.acid.Config;
-import net.kunmc.lab.acid.util.Const;
 import net.kunmc.lab.acid.game.GameManager;
+import net.kunmc.lab.acid.util.Const;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
@@ -24,12 +24,12 @@ public class Task extends BukkitRunnable {
             return;
 
         // 雨
-        for (World world: Bukkit.getWorlds()) {
+        for (World world : Bukkit.getWorlds()) {
             world.setStorm(true);
         }
 
 
-        for (Player p: GameManager.getTargetPlayerList()) {
+        for (Player p : GameManager.getTargetPlayerList()) {
             // 水に当たっている間はカウント
             if (GameManager.isInAcid(p)) {
                 GameManager.setWettingCnt(p, GameManager.getWettingCnt(p) + 1);
@@ -45,8 +45,8 @@ public class Task extends BukkitRunnable {
         }
 
         if (Config.booleanConf.get(Const.ACID_TARGET_MOB)) {
-            for (World world: Bukkit.getWorlds()) {
-                for (Entity entity: world.getEntities()) {
+            for (World world : Bukkit.getWorlds()) {
+                for (Entity entity : world.getEntities()) {
                     if (entity instanceof Mob) {
                         ((Mob) entity).damage(Config.intConf.get(Const.DAMAGE));
                     }

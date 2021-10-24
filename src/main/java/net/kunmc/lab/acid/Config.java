@@ -9,6 +9,7 @@ import java.util.Map;
 public class Config {
     public static Map<String, Integer> intConf = new HashMap<>();
     public static Map<String, Boolean> booleanConf = new HashMap<>();
+
     public static void loadConfig(boolean isReload) {
 
         Acid plugin = Acid.getPlugin();
@@ -31,7 +32,7 @@ public class Config {
         booleanConf.put(Const.ACID_TARGET_RAIN, false);
         booleanConf.put(Const.ACID_TARGET_MOB, false);
 
-        for (String key: config.getStringList("acidSwitch")) {
+        for (String key : config.getStringList("acidSwitch")) {
             booleanConf.put(key, true);
         }
     }
