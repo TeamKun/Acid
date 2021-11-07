@@ -6,6 +6,7 @@ import net.kunmc.lab.acid.util.Const;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -47,8 +48,17 @@ public class Task extends BukkitRunnable {
         if (Config.booleanConf.get(Const.ACID_TARGET_MOB)) {
             for (World world : Bukkit.getWorlds()) {
                 for (Entity entity : world.getEntities()) {
-                    if (entity instanceof Mob) {
+                    if (entity instanceof Mob && GameManager.isInAcid(entity)) {
                         ((Mob) entity).damage(Config.intConf.get(Const.DAMAGE));
+                    }
+                }
+            }
+        }
+        if (Config.booleanConf.get(Const.ACID_TARGET_ITEM)) {
+            for (World world : Bukkit.getWorlds()) {
+                for (Entity entity : world.getEntities()) {
+                    if (entity instanceof Item && GameManager.isInAcid(entity)) {
+                        entity.remove();
                     }
                 }
             }

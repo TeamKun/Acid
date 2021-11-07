@@ -31,6 +31,7 @@ public class Config {
         booleanConf.put(Const.ACID_TARGET_POTION_EFFECT, false);
         booleanConf.put(Const.ACID_TARGET_RAIN, false);
         booleanConf.put(Const.ACID_TARGET_MOB, false);
+        booleanConf.put(Const.ACID_TARGET_ITEM, false);
 
         for (String key : config.getStringList("acidSwitch")) {
             booleanConf.put(key, true);

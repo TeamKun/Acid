@@ -222,6 +222,4 @@ public class CommandController implements CommandExecutor, TabCompleter {
         }
         return true;
     }
-
-
 }

@@ -10,6 +10,7 @@ public class Const {
     public static final String ACID_TARGET_POTION_EFFECT = "potionEffect";
     public static final String ACID_TARGET_RAIN = "rain";
     public static final String ACID_TARGET_MOB = "mob";
+    public static final String ACID_TARGET_ITEM = "item";
 
     // Command
     public static final String MAIN = "acid";

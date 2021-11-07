@@ -56,12 +56,12 @@ public class GameManager {
         playerWettingCnt.put(p.getUniqueId(), cnt);
     }
 
-    public static boolean isInAcid(Player p) {
+    public static boolean isInAcid(Entity entity) {
         boolean isInAcid = false;
-        if (Config.booleanConf.get(Const.ACID_TARGET_BLOCK) && p.isInWaterOrBubbleColumn()) {
+        if (Config.booleanConf.get(Const.ACID_TARGET_BLOCK) && entity.isInWaterOrBubbleColumn()) {
             isInAcid = true;
         }
-        if (Config.booleanConf.get(Const.ACID_TARGET_RAIN) && p.isInRain()) {
+        if (Config.booleanConf.get(Const.ACID_TARGET_RAIN) && entity.isInRain()) {
             isInAcid = true;
         }
 
