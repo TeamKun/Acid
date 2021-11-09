@@ -3,6 +3,9 @@ package net.kunmc.lab.acid.game;
 import net.kunmc.lab.acid.Config;
 import net.kunmc.lab.acid.util.Const;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
+import org.bukkit.Material;
+import org.bukkit.Particle;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Mob;
 import org.bukkit.entity.Player;
@@ -57,12 +60,22 @@ public class GameManager {
     }
 
     public static boolean isInAcid(Entity entity) {
-        boolean isInAcid = false;
+        // 水中
         if (Config.booleanConf.get(Const.ACID_TARGET_BLOCK) && entity.isInWaterOrBubbleColumn()) {
-            isInAcid = true;
+            return true;
         }
-        if (Config.booleanConf.get(Const.ACID_TARGET_RAIN) && entity.isInRain()) {
-            isInAcid = true;
+
+        // 雨
+        boolean isInAcid = true;
+        if (Config.booleanConf.get(Const.ACID_TARGET_RAIN)) {
+            Location loc = entity.getLocation().add(0,1,0);
+            for(int i = 0; i < Config.intConf.get(Const.RAIN_POINT); i++) {
+                if (loc.getBlock().getType() != Material.AIR) {
+                    isInAcid = false;
+                    break;
+                }
+                loc.add(0,1,0);
+            }
         }
 
         return isInAcid;
@@ -79,5 +92,13 @@ public class GameManager {
         }
 
         return isTargetEntity;
+    }
+
+    public static void fallRain(Player p) {
+        int rainPoint = Config.intConf.get(Const.RAIN_POINT);
+        double x = p.getLocation().getX();
+        double y = p.getLocation().getY() + rainPoint;
+        double z = p.getLocation().getZ();
+        p.getWorld().spawnParticle(Particle.FALLING_WATER, x, y, z, 100, 10 ,0, 10);
     }
 }

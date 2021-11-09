@@ -24,13 +24,12 @@ public class Task extends BukkitRunnable {
         if (GameManager.runningMode == GameManager.GameMode.NEUTRAL)
             return;
 
-        // 雨
         for (World world : Bukkit.getWorlds()) {
-            world.setStorm(true);
+            world.setStorm(false);
         }
 
-
         for (Player p : GameManager.getTargetPlayerList()) {
+            GameManager.fallRain(p);
             // 水に当たっている間はカウント
             if (GameManager.isInAcid(p)) {
                 GameManager.setWettingCnt(p, GameManager.getWettingCnt(p) + 1);

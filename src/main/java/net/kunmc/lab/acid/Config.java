@@ -25,6 +25,8 @@ public class Config {
         intConf.put(Const.DAMAGE, config.getInt(Const.DAMAGE));
         intConf.put(Const.SPLASH_DAMAGE, config.getInt(Const.SPLASH_DAMAGE));
         intConf.put(Const.DAMAGE_TICK, config.getInt(Const.DAMAGE_TICK));
+        intConf.put(Const.RAIN_NUM, config.getInt(Const.RAIN_NUM));
+        intConf.put(Const.RAIN_POINT, config.getInt(Const.RAIN_POINT));
 
         booleanConf.put(Const.ACID_TARGET_BLOCK, false);
         booleanConf.put(Const.ACID_TARGET_POTION, false);

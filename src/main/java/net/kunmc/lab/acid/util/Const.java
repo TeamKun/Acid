@@ -5,6 +5,8 @@ public class Const {
     public static final String DAMAGE_TICK = "damageTick";
     public static final String DAMAGE = "damage";
     public static final String SPLASH_DAMAGE = "splashDamage";
+    public static final String RAIN_NUM = "rainNum";
+    public static final String RAIN_POINT = "rainPoint";
     public static final String ACID_TARGET_BLOCK = "block";
     public static final String ACID_TARGET_POTION = "potion";
     public static final String ACID_TARGET_POTION_EFFECT = "potionEffect";
