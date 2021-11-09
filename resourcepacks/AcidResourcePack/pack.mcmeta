@@ -2,6 +2,18 @@
   "pack":{
     "pack_format": 6,
     "description": "Acid Resourcepacks"
+  },
+  "language": {
+    "en_us": {
+      "name": "English",
+      "region": "US",
+      "bidirectional": false
+    },
+    "ja_jp": {
+      "name": "日本語",
+      "region": "日本",
+      "bidirectional": false
+    }
   }
 }
 
