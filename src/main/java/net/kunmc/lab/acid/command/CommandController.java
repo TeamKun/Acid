@@ -31,13 +31,17 @@ public class CommandController implements CommandExecutor, TabCompleter {
         } else if (args.length == 3 && args[0].equals(Const.SET_CONFIG) &&
                 ((args[1].equals(Const.DAMAGE) ||
                         args[1].equals(Const.SPLASH_DAMAGE) ||
-                        args[1].equals(Const.DAMAGE_TICK)))) {
+                        args[1].equals(Const.DAMAGE_TICK) ||
+                        args[1].equals(Const.RAIN_NUM) ||
+                        args[1].equals(Const.RAIN_POINT)))) {
             completions.add("<数字>");
         } else if (args.length == 2 && args[0].equals(Const.SET_CONFIG)) {
             completions.addAll(Stream.of(
                     Const.DAMAGE_TICK,
                     Const.DAMAGE,
                     Const.SPLASH_DAMAGE,
+                    Const.RAIN_NUM,
+                    Const.RAIN_POINT,
                     Const.OFF_ACID_TARGET,
                     Const.ON_ACID_TARGET)
                     .filter(e -> e.startsWith(args[1])).collect(Collectors.toList()));
@@ -102,28 +106,19 @@ public class CommandController implements CommandExecutor, TabCompleter {
             case Const.SET_CONFIG:
                 switch (args[1]) {
                     case Const.DAMAGE:
-                        if (!checkArgsNum(sender, args.length, 3)) return true;
-                        int ret = validateNum(sender, args[2]);
-                        if (ret == -1) return true;
-
-                        Config.intConf.put(Const.DAMAGE, ret);
-                        sender.sendMessage(DecolationConst.GREEN + Const.DAMAGE + "の値を" + Config.intConf.get(Const.DAMAGE) + "に変更しました");
+                        setIntConfig(sender, args, 3, Const.DAMAGE);
                         break;
                     case Const.SPLASH_DAMAGE:
-                        if (!checkArgsNum(sender, args.length, 3)) return true;
-                        ret = validateNum(sender, args[2]);
-                        if (ret == -1) return true;
-
-                        Config.intConf.put(Const.SPLASH_DAMAGE, ret);
-                        sender.sendMessage(DecolationConst.GREEN + Const.SPLASH_DAMAGE + "の値を" + Config.intConf.get(Const.SPLASH_DAMAGE) + "に変更しました");
+                        setIntConfig(sender, args, 3, Const.SPLASH_DAMAGE);
+                        break;
+                    case Const.RAIN_NUM:
+                        setIntConfig(sender, args, 3, Const.RAIN_NUM);
+                        break;
+                    case Const.RAIN_POINT:
+                        setIntConfig(sender, args, 3, Const.RAIN_POINT);
                         break;
                     case Const.DAMAGE_TICK:
-                        if (!checkArgsNum(sender, args.length, 3)) return true;
-                        ret = validateNum(sender, args[2]);
-                        if (ret == -1) return true;
-
-                        Config.intConf.put(Const.DAMAGE_TICK, ret);
-                        sender.sendMessage(DecolationConst.GREEN + Const.DAMAGE_TICK + "の値を" + Config.intConf.get(Const.DAMAGE_TICK) + "に変更しました");
+                        setIntConfig(sender, args, 3, Const.DAMAGE_TICK);
                         break;
                     case Const.ON_ACID_TARGET:
                         if (!checkArgsNum(sender, args.length, 3)) return true;
@@ -132,6 +127,7 @@ public class CommandController implements CommandExecutor, TabCompleter {
                         if (Config.booleanConf.get(args[2])) sender.sendMessage(DecolationConst.AQUA + "すでにONになっています");
                         Config.booleanConf.put(args[2], true);
                         sender.sendMessage(DecolationConst.GREEN + args[2] + "の設定をONにしました");
+                        Config.saveConfig(args[2]);
                         break;
                     case Const.OFF_ACID_TARGET:
                         if (!checkArgsNum(sender, args.length, 3)) return true;
@@ -141,7 +137,11 @@ public class CommandController implements CommandExecutor, TabCompleter {
                             sender.sendMessage(DecolationConst.AQUA + "すでにOFFになっています");
                         Config.booleanConf.put(args[2], false);
                         sender.sendMessage(DecolationConst.GREEN + args[2] + "の設定をOFFにしました");
+                        Config.saveConfig(args[2]);
                         break;
+                    default:
+                        sender.sendMessage(DecolationConst.RED + "存在しない設定項目です");
+                        sendUsage(sender);
                 }
                 break;
             case Const.SHOW_STATUS:
@@ -183,10 +183,16 @@ public class CommandController implements CommandExecutor, TabCompleter {
         sender.sendMessage(String.format("%s水や雨で濡れている時に受けるダメージ", descPrefix));
         sender.sendMessage(String.format("%s%s %s <number>"
                 , usagePrefix, Const.SET_CONFIG, Const.SPLASH_DAMAGE));
-        sender.sendMessage(String.format("%ポーションなどを浴びた時に受けるダメージ", descPrefix));
+        sender.sendMessage(String.format("%sポーションなどを浴びた時に受けるダメージ", descPrefix));
         sender.sendMessage(String.format("%s%s %s <number>"
                 , usagePrefix, Const.SET_CONFIG, Const.DAMAGE_TICK));
         sender.sendMessage(String.format("%s水や雨で濡れている時にダメージを受ける間隔(Tick)", descPrefix));
+        sender.sendMessage(String.format("%s%s %s <number>"
+                , usagePrefix, Const.SET_CONFIG, Const.RAIN_NUM));
+        sender.sendMessage(String.format("%s1ティックあたりに発生する雨パーティションの数", descPrefix));
+        sender.sendMessage(String.format("%s%s %s <number>"
+                , usagePrefix, Const.SET_CONFIG, Const.RAIN_POINT));
+        sender.sendMessage(String.format("%s雨が発生する高さ", descPrefix));
         sender.sendMessage(String.format("%s%s %s <block|potion|potionEffect|rain|mob>"
                 , usagePrefix, Const.SET_CONFIG, Const.OFF_ACID_TARGET));
         sender.sendMessage(String.format("%s指定した設定をOFFに切り替える", descPrefix));
@@ -220,6 +226,17 @@ public class CommandController implements CommandExecutor, TabCompleter {
             sender.sendMessage(DecolationConst.RED + "引数の数が不正です");
             return false;
         }
+        return true;
+    }
+
+    private boolean setIntConfig(CommandSender sender, String[] args, int validLength, String configName){
+        if (!checkArgsNum(sender, args.length, validLength)) return false;
+        int ret = validateNum(sender, args[2]);
+        if (ret == -1) return false;
+
+        Config.intConf.put(configName, ret);
+        sender.sendMessage(DecolationConst.GREEN + configName + "の値を" + Config.intConf.get(configName) + "に変更しました");
+        Config.saveConfig(configName);
         return true;
     }
 }

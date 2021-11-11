@@ -66,8 +66,9 @@ public class GameManager {
         }
 
         // 雨
-        boolean isInAcid = true;
+        boolean isInAcid = false;
         if (Config.booleanConf.get(Const.ACID_TARGET_RAIN)) {
+            isInAcid = true;
             Location loc = entity.getLocation().add(0,1,0);
             for(int i = 0; i < Config.intConf.get(Const.RAIN_POINT); i++) {
                 if (loc.getBlock().getType() != Material.AIR) {
@@ -99,6 +100,6 @@ public class GameManager {
         double x = p.getLocation().getX();
         double y = p.getLocation().getY() + rainPoint;
         double z = p.getLocation().getZ();
-        p.getWorld().spawnParticle(Particle.FALLING_WATER, x, y, z, 100, 10 ,0, 10);
+        p.getWorld().spawnParticle(Particle.FALLING_WATER, x, y, z, Config.intConf.get(Const.RAIN_NUM), 10 ,0, 10);
     }
 }

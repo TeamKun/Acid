@@ -3,6 +3,7 @@ package net.kunmc.lab.acid;
 import net.kunmc.lab.acid.util.Const;
 import org.bukkit.configuration.file.FileConfiguration;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -13,7 +14,6 @@ public class Config {
     public static void loadConfig(boolean isReload) {
 
         Acid plugin = Acid.getPlugin();
-
         plugin.saveDefaultConfig();
 
         if (isReload) {
@@ -40,4 +40,19 @@ public class Config {
         }
     }
 
+    public static void saveConfig(String key){
+        Acid plugin = Acid.getPlugin();
+        FileConfiguration config = plugin.getConfig();
+        if (intConf.containsKey(key)) {
+            config.set(key, intConf.get(key));
+        }
+        else if (booleanConf.containsKey(key)) {
+            ArrayList<String> tmpList = new ArrayList();
+            for (String booleanKey: booleanConf.keySet()) {
+                if (booleanConf.get(booleanKey)) tmpList.add(booleanKey);
+            }
+            config.set("acidSwitch", tmpList);
+        }
+        plugin.saveConfig();
+    }
 }
