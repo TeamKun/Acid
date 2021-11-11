@@ -4,6 +4,7 @@ import net.kunmc.lab.acid.Config;
 import net.kunmc.lab.acid.game.GameManager;
 import net.kunmc.lab.acid.util.Const;
 import org.bukkit.Bukkit;
+import org.bukkit.Sound;
 import org.bukkit.World;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.Item;
@@ -31,14 +32,23 @@ public class Task extends BukkitRunnable {
         }
 
         for (Player p : GameManager.getTargetPlayerList()) {
-            if(Config.booleanConf.get(Const.ACID_TARGET_RAIN)) GameManager.fallRain(p);
-            // 水に当たっている間はカウント
+
+            // 雨が降っている場合の処理
+            if(Config.booleanConf.get(Const.ACID_TARGET_RAIN)) {
+                GameManager.fallRain(p);
+                if (GameManager.isInRain(p)) {
+                    p.playSound(p.getLocation(), Sound.WEATHER_RAIN,0.8f ,1);
+                } else {
+                    p.playSound(p.getLocation(), Sound.WEATHER_RAIN,0.1f ,1);
+                }
+            }
+
+            // 水に当たっている間のダメージカウント
             if (GameManager.isInAcid(p)) {
                 GameManager.setWettingCnt(p, GameManager.getWettingCnt(p) + 1);
             } else {
                 GameManager.setWettingCnt(p, 0);
             }
-
             // カウントが一定の値を越えたらダメージ
             if (GameManager.getWettingCnt(p) > Config.intConf.get(Const.DAMAGE_TICK)) {
                 p.damage(Config.intConf.get(Const.DAMAGE));
@@ -46,6 +56,7 @@ public class Task extends BukkitRunnable {
             }
         }
 
+        // Mobを処理する場合
         if (Config.booleanConf.get(Const.ACID_TARGET_MOB)) {
             for (World world : Bukkit.getWorlds()) {
                 for (Entity entity : world.getEntities()) {
@@ -55,6 +66,7 @@ public class Task extends BukkitRunnable {
                 }
             }
         }
+        // Itemを処理する場合
         if (Config.booleanConf.get(Const.ACID_TARGET_ITEM)) {
             for (World world : Bukkit.getWorlds()) {
                 for (Entity entity : world.getEntities()) {

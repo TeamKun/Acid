@@ -65,21 +65,25 @@ public class GameManager {
             return true;
         }
 
-        // 雨
-        boolean isInAcid = false;
-        if (Config.booleanConf.get(Const.ACID_TARGET_RAIN)) {
-            isInAcid = true;
-            Location loc = entity.getLocation().add(0,1,0);
-            for(int i = 0; i < Config.intConf.get(Const.RAIN_POINT); i++) {
-                if (loc.getBlock().getType() != Material.AIR) {
-                    isInAcid = false;
-                    break;
-                }
-                loc.add(0,1,0);
-            }
-        }
+        // 雨判定
+        return isInRain(entity);
+    }
 
-        return isInAcid;
+    public static boolean isInRain(Entity entity){
+
+        if (! Config.booleanConf.get(Const.ACID_TARGET_RAIN)) return false;
+
+        // 雨
+        boolean isInRain = true;
+        Location loc = entity.getLocation().add(0,1,0);
+        for(int i = 0; i < Config.intConf.get(Const.RAIN_POINT); i++) {
+            if (loc.getBlock().getType() != Material.AIR) {
+                isInRain = false;
+                break;
+            }
+            loc.add(0,1,0);
+        }
+        return isInRain;
     }
 
     public static boolean isPotionTargetEntity(Entity entity) {
