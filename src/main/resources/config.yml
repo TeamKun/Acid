@@ -1,8 +1,8 @@
 damageTick: 10
 damage: 1
 splashDamage: 5
-rainNum: 100
-rainPoint: 10
+rainNum: 20
+rainPoint: 30
 acidSwitch:
   - block
   - potion

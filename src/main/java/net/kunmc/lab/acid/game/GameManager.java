@@ -104,6 +104,6 @@ public class GameManager {
         double x = p.getLocation().getX();
         double y = p.getLocation().getY() + rainPoint;
         double z = p.getLocation().getZ();
-        p.getWorld().spawnParticle(Particle.FALLING_WATER, x, y, z, Config.intConf.get(Const.RAIN_NUM), 10 ,0, 10);
+        p.getWorld().spawnParticle(Particle.FALLING_WATER, x, y, z, Config.intConf.get(Const.RAIN_NUM), 4 ,1, 4);
     }
 }

@@ -20,10 +20,14 @@ public class Task extends BukkitRunnable {
         this.plugin = plugin;
     }
 
+    int rainCnt = 0;
+
     @Override
     public void run() {
         if (GameManager.runningMode == GameManager.GameMode.NEUTRAL)
             return;
+
+        rainCnt++;
 
         if (Config.booleanConf.get(Const.ACID_TARGET_RAIN)) {
             for (World world : Bukkit.getWorlds()) {
@@ -35,9 +39,12 @@ public class Task extends BukkitRunnable {
 
             // 雨が降っている場合の処理
             if(Config.booleanConf.get(Const.ACID_TARGET_RAIN)) {
-                GameManager.fallRain(p);
+                if (rainCnt % 3 == 0) {
+                    GameManager.fallRain(p);
+                    rainCnt = 0;
+                }
                 if (GameManager.isInRain(p)) {
-                    p.playSound(p.getLocation(), Sound.WEATHER_RAIN,0.8f ,1);
+                    p.playSound(p.getLocation(), Sound.WEATHER_RAIN,0.4f ,1);
                 } else {
                     p.playSound(p.getLocation(), Sound.WEATHER_RAIN,0.1f ,1);
                 }
